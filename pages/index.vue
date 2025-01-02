@@ -16,7 +16,7 @@
             <p class="text-gray-600 mb-4">{{ product.price }}€</p>
             <button
               @click="addToCart(product)"
-              class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
+              class="bg-blue-500 hover:bg-green-600 text-white px-4 py-2 rounded"
             >
               Warenkorb hinzufügen
             </button>
