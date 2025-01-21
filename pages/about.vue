@@ -1,4 +1,7 @@
 <template>
+    <div>
+    ----DAS IST EIN DUMMY TEXT DER RANDOM GENERIERT WURDE----
+  </div>
   <div class="p-8">
     <h1 class="text-4xl font-bold text-gray-800 mb-6">About Frühlingswetter Shop</h1>
     <p class="text-lg text-gray-700 mb-4">Welcome to Frühlingswetter Shop!</p>
@@ -28,6 +31,9 @@
       Come visit us at Frühlingswetter Shop and make your spring season brighter
       and more enjoyable!
     </p>
+  </div>
+  <div>
+    ----DAS IST EIN DUMMY TEXT DER RANDOM GENERIERT WURDE----
   </div>
 </template>
 
