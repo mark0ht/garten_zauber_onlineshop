@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     '@nuxt/icon',
     'nuxt-headlessui',
     '@nuxt/content',
+    '@nuxt/ui',
     // '@sidebase/nuxt-auth'
   ],
   tailwindcss: {

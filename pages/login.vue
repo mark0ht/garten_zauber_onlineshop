@@ -1,10 +1,10 @@
 <script setup lang="ts">
-/* definePageMeta({
+definePageMeta({
   auth: {
     unauthenticatedOnly: true,
     navigateAuthenticatedTo: '/index',
   },
-}) */
+})
 </script>
 
 <template>
