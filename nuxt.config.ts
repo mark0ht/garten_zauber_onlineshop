@@ -1,4 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { defineNuxtConfig } from 'nuxt/config';
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
@@ -8,7 +9,7 @@ export default defineNuxtConfig({
     '@nuxt/icon',
     'nuxt-headlessui',
     '@nuxt/content',
-    '@nuxt/ui',
+    '@nuxt/fonts',
     // '@sidebase/nuxt-auth'
   ],
   tailwindcss: {
