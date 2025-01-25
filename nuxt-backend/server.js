@@ -1,19 +1,19 @@
-const express = require("express");
+/* const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const cors = require("cors");
 require("dotenv").config();
-
+ */
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cors()); 
 
-// Dummy database (replace with real database later)
+// fake dummy database will be replaced with SQL database in the future I hope so
 const users = [];
-const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key";
+const JWT_SECRET = process.env.JWT_SECRET || "my_secret_key";
 
-// Email setup (use a real email later)
+// Email transpoter setup
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -22,27 +22,41 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// ✅ 1️⃣ Register User
+// Register a new user
 app.post("/register", async (req, res) => {
   const { email, password } = req.body;
-  if (users.find((u) => u.email === email))
-    return res.status(400).json({ message: "User already exists" });
 
+  // find if user already exist//
+  const existingUser = users.find((u) => u.email === email);
+  if (existingUser) {
+    return res.status(400).json({ message: "User already exists" });
+  }
+
+  // stores the hashed password
   const hashedPassword = await bcrypt.hash(password, 10);
   users.push({ email, password: hashedPassword });
-  res.json({ message: "User registered" });
+
+  res.json({ message: "User registered successfully" });
 });
 
-// ✅ 2️⃣ Request Password Reset
+// requesting the pw reset
 app.post("/request-reset", async (req, res) => {
   const { email } = req.body;
-  const user = users.find((u) => u.email === email);
-  if (!user) return res.status(404).json({ message: "User not found" });
 
+  // Find user
+  const user = users.find((u) => u.email === email);
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  // this generates a passowrd reset token that expires in 15 minuts
   const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: "15m" });
   user.resetToken = token;
 
+  // link is send via email
   const resetLink = `http://localhost:3000/reset-password?token=${token}`;
+
+  // / sends the email with the reset link
   await transporter.sendMail({
     from: process.env.EMAIL_USER,
     to: email,
@@ -50,19 +64,27 @@ app.post("/request-reset", async (req, res) => {
     text: `Click here to reset your password: ${resetLink}`,
   });
 
+  console.log(`Reset Link: ${resetLink}`); // this is for testing purposes mainly
+
   res.json({ message: "Reset link sent to your email" });
 });
 
-// ✅ 3️⃣ Reset Password
+// token resets the password 
 app.post("/reset-password", async (req, res) => {
   const { token, newPassword } = req.body;
+
   try {
+    // verifies token
     const decoded = jwt.verify(token, JWT_SECRET);
     const user = users.find((u) => u.email === decoded.email);
-    if (!user) return res.status(400).json({ message: "Invalid token" });
 
+    if (!user) {
+      return res.status(400).json({ message: "Invalid token" });
+    }
+
+    // hashes the passwrd and updates
     user.password = await bcrypt.hash(newPassword, 10);
-    user.resetToken = null;
+    user.resetToken = null; // Invalidate the token after use
 
     res.json({ message: "Password reset successful" });
   } catch (error) {
@@ -70,4 +92,7 @@ app.post("/reset-password", async (req, res) => {
   }
 });
 
-app.listen(3001, () => console.log("✅ Server running on http://localhost:3001"));
+// Startin the server
+app.listen(3001, () => {
+  console.log("Server running on http://localhost:3001");
+});
