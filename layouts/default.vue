@@ -44,8 +44,16 @@
           </ul>
         </nav>
 
-        <!-- Search Bar -->
-        <SearchBar />
+        <!-- Benutzerprofil & Suche -->
+        <div class="flex items-center space-x-4">
+          <SearchBar />
+
+          <!-- Benutzerbild & Name -->
+          <div v-if="isAuthenticated" class="flex items-center space-x-2 cursor-pointer">
+            <img :src="user.avatar || '/default-avatar.png'" class="w-10 h-10 rounded-full border-2 border-white" alt="User Avatar">
+            <span class="hidden md:inline text-white font-medium">{{ user.name }}</span>
+          </div>
+        </div>
       </div>
     </header>
 
@@ -62,11 +70,13 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import { useUserStore } from '~/store/user';
 import SearchBar from '~/components/SearchBar.vue';
 
 const userStore = useUserStore();
 const isAuthenticated = computed(() => userStore.isAuthenticated);
+const user = computed(() => userStore.user);
 
 const logout = () => {
   userStore.logout();
@@ -74,7 +84,6 @@ const logout = () => {
 </script>
 
 <style scoped>
-/* the header stays statiic */
 header {
   position: sticky;
   top: 0;

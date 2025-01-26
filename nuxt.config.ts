@@ -7,8 +7,6 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@nuxt/icon',
     'nuxt-headlessui',
-    '@nuxt/content',
-    // '@sidebase/nuxt-auth'
   ],
   tailwindcss: {
     config: {
