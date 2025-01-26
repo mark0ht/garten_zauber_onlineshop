@@ -1,72 +1,70 @@
 <template>
-  <!-- Full page contai ner with background color -->
   <div class="min-h-screen bg-gray-100">
+    <!-- basic cart page with a simple layout -->
     
-    <!-- Simple header with a title -->
+    <!-- headersection -->
     <header class="p-4 bg-green-600 text-white text-center">
-      <h1 class="text-2xl font-bold">Your Shopping Cart</h1>
+      <h1 class="text-2xl font-bold">your shopping cart</h1>
     </header>
 
-    <!-- Main content area -->
+    <!-- main content area -->
     <main class="p-6 max-w-4xl mx-auto">
       
-      <!-- If there are items in the cart, show them -->
+      <!-- check if there are items -->
       <div v-if="cartItems.length">
         
-        <!-- Loop tdhrough each cart item -->
+        <!-- looping through each item in the cart -->
         <div 
           v-for="item in cartItems" 
           :key="item.id" 
           class="flex items-center mb-4 bg-white p-4 shadow rounded"
         >
-          <!-- Product   image -->
+          <!-- product image because visuals matter -->
           <img 
             :src="item.image" 
             :alt="item.name" 
             class="w-24 h-24 object-cover rounded mr-4" 
           />
           
-          <!-- Product name and price   -->
+          <!-- product name and price, so users know what they're getting -->
           <div class="flex-grow">
             <h2 class="text-lg font-semibold">{{ item.name }}</h2>
             <p class="text-gray-600">{{ item.price }}€</p>
           </div>
           
-          <!-- Remove button -->
+          <!-- button to remove the item from cart -->
           <button 
             @click="removeItem(item.id)" 
             class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
           >
-            Remove
+            remove
           </button>
         </div>
 
-        <!-- Show total price at the bottom -->
-        <p class="text-right text-lg font-bold">Total: {{ totalPrice }}€</p>
+        <!-- total pricee display -->
+        <p class="text-right text-lg font-bold">total: {{ totalPrice }}€</p>
       </div>
 
-      <!-- If cart is empty, show this message -->
+      <!-- message when the cart is empty -->
       <div v-else>
-        <p class="text-center text-gray-600">Your cart is empty!</p>
+        <p class="text-center text-gray-600">your cart is empty!</p>
       </div>
-   
     </main>
   </div>
 </template>
 
 <script setup>
-import { useCartStore } from "~/store/cart"; // Import the cart store
+import { useCartStore } from "~/store/cart"; // import the cart store
 
-const cartStore = useCartStore(); // Get the cart store
+const cartStore = useCartStore(); // get the cart store
 
-// Get the current cart items
+// computed property to get cart items
 const cartItems = computed(() => cartStore.items);
 
-
-// Calculate the total price
+// computed proprty to calculate total price
 const totalPrice = computed(() => cartStore.totalPrice);
 
-// Remove an item from the cart
+//remove an item from the cart
 const removeItem = (id) => {
   cartStore.removeFromCart(id);
 };

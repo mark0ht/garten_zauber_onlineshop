@@ -1,70 +1,52 @@
 <template>
-  <div class="flex flex-col min-h-screen">
-    <!-- Header -->
-    <header class="bg-green-600 text-white p-4 shadow-md">
-      <div class="container mx-auto flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
-        <!-- Logo -->
-        <NuxtLink to="/" class="text-2xl font-bold hover:text-gray-200 transition">
+  <div class="flex flex-col min-h-screen bg-gray-100">
+    <!-- header with modern navigation -->
+    <header class="bg-green-700 text-white shadow-md sticky top-0 z-50">
+      <div class="container mx-auto flex justify-between items-center p-4">
+        <!-- logo -->
+        <NuxtLink to="/" class="text-3xl font-bold hover:text-gray-200 transition">
           Frühlingswetter Shop
         </NuxtLink>
 
-        <!-- Navigation -->
-        <nav>
-          <ul class="flex space-x-4">
-            <li>
-              <NuxtLink to="/" class="hover:text-gray-200 transition" active-class="font-bold underline">
-                Startseite
-              </NuxtLink>
-            </li>
-            <li>
-              <NuxtLink to="/about" class="hover:text-gray-200 transition" active-class="font-bold underline">
-                Über uns
-              </NuxtLink>
-            </li>
-            <li>
-              <NuxtLink to="/cart" class="hover:text-gray-200 transition" active-class="font-bold underline">
-                Warenkorb
-              </NuxtLink>
-            </li>
-            <li v-if="!isAuthenticated">
-              <NuxtLink to="/login" class="hover:text-gray-200 transition" active-class="font-bold underline">
-                Login
-              </NuxtLink>
-            </li>
-            <li v-if="!isAuthenticated">
-              <NuxtLink to="/register" class="hover:text-gray-200 transition" active-class="font-bold underline">
-                Registrieren
-              </NuxtLink>
-            </li>
-            <li v-if="isAuthenticated">
-              <button @click="logout" class="hover:text-gray-200 transition font-bold">
-                Logout
-              </button>
-            </li>
-          </ul>
+        <!-- navigation -->
+        <nav class="hidden md:flex space-x-6 text-lg">
+          <NuxtLink to="/" class="hover:text-gray-300 transition" active-class="font-bold underline">Startseite</NuxtLink>
+          <NuxtLink to="/about" class="hover:text-gray-300 transition" active-class="font-bold underline">Über uns</NuxtLink>
+          <NuxtLink to="/cart" class="hover:text-gray-300 transition" active-class="font-bold underline">Warenkorb</NuxtLink>
+          <NuxtLink to="/checkout" class="hover:text-gray-300 transition" active-class="font-bold underline">Checkout</NuxtLink>
         </nav>
 
-        <!-- Benutzerprofil & Suche -->
+        <!-- user profile & search -->
         <div class="flex items-center space-x-4">
-          <SearchBar />
+          <SearchBar class="hidden md:block bg-white text-gray-900 px-4 py-2 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-green-500" />
 
-          <!-- Benutzerbild & Name -->
-          <div v-if="isAuthenticated" class="flex items-center space-x-2 cursor-pointer">
-            <img :src="user.avatar || '/default-avatar.png'" class="w-10 h-10 rounded-full border-2 border-white" alt="User Avatar">
-            <span class="hidden md:inline text-white font-medium">{{ user.name }}</span>
+          <!-- user dropdown -->
+          <div v-if="isAuthenticated" class="relative group cursor-pointer">
+            <div class="flex items-center space-x-2">
+              <img :src="user.avatar || '/default-avatar.png'" class="w-10 h-10 rounded-full border-2 border-white shadow-lg" alt="User Avatar">
+              <span class="hidden md:inline text-white font-medium">{{ user.name }}</span>
+            </div>
+            <!-- dropdown menu -->
+            <div class="absolute right-0 mt-2 w-48 bg-white text-gray-700 rounded-lg shadow-lg hidden group-hover:block">
+              <NuxtLink to="/profile" class="block px-4 py-2 hover:bg-gray-100">Mein Profil</NuxtLink>
+              <button @click="logout" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Logout</button>
+            </div>
           </div>
+
+          <NuxtLink v-if="!isAuthenticated" to="/login" class="bg-green-500 px-4 py-2 rounded-lg text-white hover:bg-blue-700 transition">Login</NuxtLink>
+          <NuxtLink v-if="!isAuthenticated" to="/register" class="bg-green-500 px-4 py-2 rounded-lg text-white hover:bg-green-700 transition">Registrieren</NuxtLink>
         </div>
       </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="flex-grow container mx-auto p-6">
+    <!-- main content -->
+    <main class="flex-grow container mx-auto p-8 bg-white shadow-md rounded-lg mt-6">
       <NuxtPage />
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white p-4 text-center">
-      <p class="text-sm">© 2025 Frühlingswetter Shop von Markus Teichert - Alle Rechte vorbehalten.</p>
+    <!-- footer -->
+    <footer class="bg-gray-800 text-white p-6 text-center text-sm mt-6 shadow-md">
+      © 2025 Frühlingswetter Shop von Markus Teichert - Alle Rechte vorbehalten.
     </footer>
   </div>
 </template>
@@ -88,9 +70,5 @@ header {
   position: sticky;
   top: 0;
   z-index: 50;
-}
-
-footer {
-  background-color: #1a202c;
 }
 </style>

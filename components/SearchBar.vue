@@ -1,14 +1,14 @@
 <template>
     <div class="relative">
-      <!-- Search Input -->
+      <!-- search box -->
       <input
         v-model="searchQuery"
         @input="onSearch"
         type="text"
-        placeholder="Search products..."
+        placeholder="search products..."
         class="w-64 px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
       />
-      <!-- Clears button for search option   -->
+      <!-- clear button to reset search -->
       <button
         @click.prevent="clearSearch"
         class="absolute right-1 top-1 h-8 w-8 flex items-center justify-center text-gray-500 hover:text-gray-700"
@@ -20,27 +20,26 @@
         </svg>
       </button>
     </div>
-  </template>
-  
-  <script setup>
-  import { ref } from 'vue';
-  import { useSearchStore } from '~/store/search';
-  
-  // aaccess the search store
-  const searchStore = useSearchStore();
-  
-  // Local ref that syncs with the store
-  const searchQuery = ref(searchStore.searchTerm);
-  
-  // Called every time the input changes
-  const onSearch = () => {
+</template>
+
+<script setup>
+import { ref } from 'vue';
+import { useSearchStore } from '~/store/search';
+
+// grab the search store
+const searchStore = useSearchStore();
+
+// local reactive variable for search input
+const searchQuery = ref(searchStore.searchTerm);
+
+// update the store whenever the user types
+const onSearch = () => {
     searchStore.setSearchTerm(searchQuery.value);
-  };
-  
-  // Clears the sead input and store
-  const clearSearch = () => {
+};
+
+// reset search input and store value
+const clearSearch = () => {
     searchQuery.value = '';
     searchStore.clearSearchTerm();
-  };
-  </script>
-  
+};
+</script>
