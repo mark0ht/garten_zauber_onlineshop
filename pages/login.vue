@@ -30,7 +30,13 @@
           Login
         </button>
       </form>
-
+      <p class="mt-4 text-center text-sm">
+        Don't have an account?
+        <NuxtLink to="/register" class="text-green-600 underline">Register</NuxtLink>
+      </p>
+    </div>
+  </div>
+</template>
 
 <script setup>
 import { useUserStore } from "~/store/user";
