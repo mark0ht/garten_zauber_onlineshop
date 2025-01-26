@@ -30,3 +30,13 @@
     </p>
   </div>
 </template>
+
+<script>
+export default {
+  name: 'About'
+}
+</script>
+
+<style>
+/* taildwindcss is directl */
+</style>
