@@ -20,7 +20,7 @@
       <div v-else>
         <p class="text-center text-gray-600">Your cart is empty!</p>
       </div>
-    </main>a
+    </main>
   </div>
 </template>
 
