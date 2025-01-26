@@ -1,25 +1,113 @@
 <template>
-  <div class="container mx-auto max-w-3xl p-4">
-    <header class="flex justify-between items-center mt-5">
-      <div>
-        <NuxtLink to="/" class="text-xl font-semibold p-2 hover:bg-gray-200">Nuxt.js</NuxtLink>
+  <div class="flex flex-col min-h-screen">
+    <!-- Header -->
+    <header class="bg-green-600 text-white p-4 shadow-md">
+      <div class="container mx-auto flex justify-between items-center">
+        <!-- Logo -->
+        <NuxtLink
+          to="/"
+          class="text-2xl font-bold hover:text-gray-200 transition"
+        >
+          Frühlingswetter Shop
+        </NuxtLink>
+
+        <!-- Navigation -->
+        <nav>
+          <ul class="flex space-x-4">
+            <li>
+              <NuxtLink
+                to="/"
+                class="hover:text-gray-200 transition"
+                active-class="font-bold underline"
+              >
+                Startseite
+              </NuxtLink>
+            </li>
+            <li>
+              <NuxtLink
+                to="/about"
+                class="hover:text-gray-200 transition"
+                active-class="font-bold underline"
+              >
+                Über uns
+              </NuxtLink>
+            </li>
+            <li>
+              <NuxtLink
+                to="/cart"
+                class="hover:text-gray-200 transition"
+                active-class="font-bold underline"
+              >
+                Warenkorb
+              </NuxtLink>
+            </li>
+            <li v-if="!isAuthenticated">
+              <NuxtLink
+                to="/login"
+                class="hover:text-gray-200 transition"
+                active-class="font-bold underline"
+              >
+                Login
+              </NuxtLink>
+            </li>
+            <li v-if="!isAuthenticated">
+              <NuxtLink
+                to="/register"
+                class="hover:text-gray-200 transition"
+                active-class="font-bold underline"
+              >
+                Registrieren
+              </NuxtLink>
+            </li>
+            <li v-if="isAuthenticated">
+              <button
+                @click="logout"
+                class="hover:text-gray-200 transition font-bold"
+              >
+                Logout
+              </button>
+            </li>
+          </ul>
+        </nav>
       </div>
-      <nav class="font-mono">
-        <ul class="flex space-x-4">
-          <li>
-            <NuxtLink to="/">Main</NuxtLink>
-          </li>
-          <li>
-            <NuxtLink to="/about">About</NuxtLink>
-          </li>
-        </ul>
-      </nav>
     </header>
-    <main class="p-2">
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto p-6">
       <NuxtPage />
     </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white p-4 text-center">
+      <p class="text-sm">
+        © 2025 Frühlingswetter Shop - Alle Rechte vorbehalten.
+      </p>
+    </footer>
   </div>
+</template>
+
+<script setup>
+import { useUserStore } from "~/store/user";
+
+// Access the user store for authentication
+const userStore = useUserStore();
+const isAuthenticated = computed(() => userStore.isAuthenticated);
+
+// Logout functionality
+const logout = () => {
+  userStore.logout();
+};
+</script>
 
 <style scoped>
-/* Your styles */
+/* Basic styles for the layout */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+footer {
+  background-color: #1a202c;
+}
 </style>
