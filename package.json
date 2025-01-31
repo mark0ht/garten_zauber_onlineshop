@@ -11,7 +11,11 @@
   },
   "dependencies": {
     "@nuxt/content": "^3.0.0",
+    "@nuxtjs/axios": "^5.13.6",
     "algoliasearch": "^5.20.0",
+    "axios": "^1.7.9",
+    "express": "^4.21.2",
+    "mysql": "^2.18.1",
     "nuxt": "^3.15.2",
     "pinia": "^2.3.1",
     "vue": "latest",

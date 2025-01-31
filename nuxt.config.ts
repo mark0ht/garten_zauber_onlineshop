@@ -8,6 +8,10 @@ export default defineNuxtConfig({
     '@nuxt/icon',
     'nuxt-headlessui',
   ],
+  axios: {
+    // Set your API base URL here, this can be different for development and production
+    baseURL: 'http://localhost:3000', // Replace with your API base URL
+  },
   tailwindcss: {
     config: {
       darkMode: 'class', // Enable class-based dark mode
