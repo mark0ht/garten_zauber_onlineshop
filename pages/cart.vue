@@ -1,8 +1,5 @@
 <template>
   <div class="min-h-screen bg-gray-100">
-    <!-- basic cart page with a simple layout -->
-    
-    <!-- headersection -->
     <header class="p-4 bg-green-600 text-white text-center">
       <h1 class="text-2xl font-bold">your shopping cart</h1>
     </header>
@@ -41,11 +38,9 @@
           </button>
         </div>
 
-        <!-- total pricee display -->
         <p class="text-right text-lg font-bold">total: {{ totalPrice }}€</p>
       </div>
 
-      <!-- message when the cart is empty -->
       <div v-else>
         <p class="text-center text-gray-600">your cart is empty!</p>
       </div>
@@ -54,17 +49,14 @@
 </template>
 
 <script setup>
-import { useCartStore } from "~/store/cart"; // import the cart store
+import { useCartStore } from "~/store/cart";
 
-const cartStore = useCartStore(); // get the cart store
+const cartStore = useCartStore();
 
-// computed property to get cart items
 const cartItems = computed(() => cartStore.items);
 
-// computed proprty to calculate total price
 const totalPrice = computed(() => cartStore.totalPrice);
 
-//remove an item from the cart
 const removeItem = (id) => {
   cartStore.removeFromCart(id);
 };

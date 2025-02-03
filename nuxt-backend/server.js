@@ -1,10 +1,10 @@
-/* const express = require("express");
+const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const cors = require("cors");
 require("dotenv").config();
- */
+
 const app = express();
 app.use(express.json());
 app.use(cors()); 

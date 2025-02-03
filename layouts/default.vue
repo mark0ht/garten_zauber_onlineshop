@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col min-h-screen bg-gray-100">
-    <!-- header with modern navigation -->
+    <!-- header with mmodern navigation -->
     <header class="bg-green-700 text-white shadow-md sticky top-0 z-50">
       <div class="container mx-auto flex justify-between items-center p-4">
         <!-- logo -->
@@ -16,7 +16,7 @@
           <NuxtLink to="/checkout" class="hover:text-gray-300 transition" active-class="font-bold underline">Checkout</NuxtLink>
         </nav>
 
-        <!-- user profile & search -->
+        <!-- user profile dd& search -->
         <div class="flex items-center space-x-4">
           <SearchBar class="hidden md:block bg-white text-gray-900 px-4 py-2 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-green-500" />
 
@@ -39,7 +39,7 @@
       </div>
     </header>
 
-    <!-- main content -->
+    <!-- main conteent -->
     <main class="flex-grow container mx-auto p-8 bg-white shadow-md rounded-lg mt-6">
       <NuxtPage />
     </main>

@@ -51,7 +51,7 @@
   
   // Function to send the new password to the backend
   const resetPassword = async () => {
-    const response = await fetch("http://localhost:3001/reset-password", {
+    const response = await fetch("http://localhost:3005/reset-password", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ token: token.value, newPassword: newPassword.value }),
