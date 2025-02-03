@@ -44,5 +44,5 @@ export default {
 </script>
 
 <style>
-/* taildwindcss is directl */
+/* taildwindcss is directl applied here */
 </style>

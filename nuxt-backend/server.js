@@ -13,7 +13,7 @@ app.use(cors());
 const users = [];
 const JWT_SECRET = process.env.JWT_SECRET || "my_secret_key";
 
-// Email transpoter setup
+// email transpoter setup
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -82,11 +82,21 @@ app.post("/reset-password", async (req, res) => {
       return res.status(400).json({ message: "Invalid token" });
     }
 
-    // hashes the passwrd and updates
+    // hashes the passwrd and upda
     user.password = await bcrypt.hash(newPassword, 10);
     user.resetToken = null; // Invalidate the token after use
 
     res.json({ message: "Password reset successful" });
+  } catch (error) {
+    res.status(400).json({ message: "Invalid or expired token" });
+  }
+});
+// remebers passwords if a user logged in
+app.post("/remember-me", async (req, res) => {
+  const { rememberToken } = req.body;
+  try {
+    const decoded = jwt.verify(rememberToken, JWT_REMEMBER_SECRET);
+    res.json({ email: decoded.email });
   } catch (error) {
     res.status(400).json({ message: "Invalid or expired token" });
   }
