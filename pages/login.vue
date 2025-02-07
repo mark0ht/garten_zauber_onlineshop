@@ -16,11 +16,11 @@
             <input type="checkbox" v-model="rememberMe" class="mr-2" /> Remember Me
           </label>
         </div>
-        <button type="submit" class="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">Login</button>
+        <button type="submit" class="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">anmelden</button>
       </form>
       <p class="mt-4 text-center text-sm">
-        Noch kein Konto?
-        <NuxtLink to="/register" class="text-green-600 underline">Registrieren</NuxtLink>
+        Besitzt du etwa noch kein Konto? :(
+        <NuxtLink to="/register" class="text-green-600 underline">Registriere dich hier </NuxtLink>
       </p>
     </div>
   </div>
@@ -56,7 +56,7 @@ const autoLogin = async () => {
   const rememberToken = localStorage.getItem("rememberToken");
   if (rememberToken) {
     try {
-      const response = await axios.post("http://localhost:3001/remember-me", {
+      const response = await axios.post("http://localhost:3005/remember-me", {
         rememberToken,
       });
       email.value = response.data.email;
