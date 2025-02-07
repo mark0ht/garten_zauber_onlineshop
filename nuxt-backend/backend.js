@@ -8,7 +8,8 @@ require("dotenv").config();
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors({ origin: "*", methods: "GET,POST,PUT,DELETE", allowedHeaders: "Content-Type, Authorization" }));
 
 const db = mysql.createConnection({
   host: "localhost",
@@ -38,7 +39,6 @@ const transporter = nodemailer.createTransport({
 
 app.post("/register", async (req, res) => {
   const { email, password, name } = req.body;
-
   const hashedPassword = await bcrypt.hash(password, 10);
   const query = "INSERT INTO users (email, password, username) VALUES (?, ?, ?)";
 
@@ -52,20 +52,30 @@ app.post("/register", async (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
+  console.log("Login route hit! Request body:", req.body);
   const { email, password, rememberMe } = req.body;
   
   const query = "SELECT * FROM users WHERE email = ?";
   db.query(query, [email], async (err, results) => {
-    if (err || results.length === 0) {
-      return res.status(400).json({ message: "Invalid credentials" });
+    if (err) {
+      console.error("Database error:", err.message);
+      return res.status(500).json({ message: "Database query error" });
+    }
+    if (results.length === 0) {
+      console.log("User not found for email:", email);
+      return res.status(400).json({ message: "User not found" });
     }
 
     const user = results[0];
+    console.log("User found:", user);
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
+      console.log("Incorrect password for:", email);
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
+    console.log("Login successful for:", email);
     const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: "1h" });
     let rememberToken = null;
     if (rememberMe) {
@@ -96,7 +106,7 @@ app.post("/request-reset", async (req, res) => {
     }
 
     const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: "15m" });
-    const resetLink = `http://localhost:3000/reset-password?token=${token}`;
+    const resetLink = `http://localhost:3005/reset-password?token=${token}`;
 
     transporter.sendMail({
       from: process.env.EMAIL_USER,
@@ -137,6 +147,13 @@ app.get("/users", (req, res) => {
     res.status(200).json(results);
   });
 });
+
+// Catch-all handler for undefined routes
+app.all("*", (req, res) => {
+  res.status(404).json({ message: "Route not found" });
+});
+
+console.log("Available Routes:", app._router.stack.map(r => r.route && r.route.path));
 
 const PORT = 3005;
 app.listen(PORT, () => {
