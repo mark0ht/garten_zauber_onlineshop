@@ -14,6 +14,7 @@
           <NuxtLink to="/about" class="hover:text-gray-300 transition" active-class="font-bold underline">Über uns</NuxtLink>
           <NuxtLink to="/cart" class="hover:text-gray-300 transition" active-class="font-bold underline">Warenkorb</NuxtLink>
           <NuxtLink to="/checkout" class="hover:text-gray-300 transition" active-class="font-bold underline">Checkout</NuxtLink>
+          <NuxtLink v-if="isAuthenticated" to="/dashboard" class="hover:text-gray-300 transition font-bold">Dashboard</NuxtLink>
         </nav>
 
         <!-- user profile dd& search -->

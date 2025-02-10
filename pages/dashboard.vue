@@ -1,23 +1,14 @@
 <template>
-    <div class="flex h-screen bg-gray-100">
-
-      <Sidebar />
-      <div class="flex-1 p-6">
-        <Header title="Dashboard" />
-  
-        <div class="grid grid-cols-3 gap-6">
-          <div class="p-4 bg-white shadow rounded-lg">
-            <h2 class="text-xl font-bold">Total Users</h2>
-            <p class="text-3xl font-semibold">{{ stats.users }}</p>
-          </div>
-          <div class="p-4 bg-white shadow rounded-lg">
-            <h2 class="text-xl font-bold">Total Products</h2>
-            <p class="text-3xl font-semibold">{{ stats.products }}</p>
-          </div>
-          <div class="p-4 bg-white shadow rounded-lg">
-            <h2 class="text-xl font-bold">Orders</h2>
-            <p class="text-3xl font-semibold">{{ stats.orders }}</p>
-          </div>
+    <div>
+      <h2 class="text-2xl font-bold">User Dashboard</h2>
+      <div class="grid grid-cols-3 gap-6 mt-6">
+        <div class="p-4 bg-white shadow rounded-lg">
+          <h2 class="text-xl font-bold">Orders</h2>
+          <p class="text-3xl font-semibold">{{ stats.orders }}</p>
+        </div>
+        <div class="p-4 bg-white shadow rounded-lg">
+          <h2 class="text-xl font-bold">Profile Completed</h2>
+          <p class="text-3xl font-semibold">{{ stats.profileCompletion }}%</p>
         </div>
       </div>
     </div>
@@ -25,13 +16,15 @@
   
   <script setup>
   import { ref, onMounted } from "vue";
-  import Sidebar from "@/components/Sidebar.vue";
-  import Header from "@/components/Header.vue";
   
-  const stats = ref({ users: 0, products: 0, orders: 0 });
+  definePageMeta({
+    layout: "dashboard", // Uses the dashboard layout
+  });
+  
+  const stats = ref({ orders: 0, profileCompletion: 70 });
   
   onMounted(async () => {
-    const res = await fetch("http://localhost:3005/dashboard-stats");
+    const res = await fetch("http://localhost:3005/user-dashboard");
     stats.value = await res.json();
   });
   </script>
