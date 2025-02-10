@@ -8,8 +8,7 @@ require("dotenv").config();
 
 const app = express();
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: "*", methods: "GET,POST,PUT,DELETE", allowedHeaders: "Content-Type, Authorization" }));
+app.use(cors());
 
 const db = mysql.createConnection({
   host: "localhost",
@@ -37,6 +36,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+// Register routes before starting the server
 app.post("/register", async (req, res) => {
   const { email, password, name } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -106,7 +106,7 @@ app.post("/request-reset", async (req, res) => {
     }
 
     const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: "15m" });
-    const resetLink = `http://localhost:3005/reset-password?token=${token}`;
+    const resetLink = `http://localhost:3000/reset-password?token=${token}`;
 
     transporter.sendMail({
       from: process.env.EMAIL_USER,
@@ -148,7 +148,26 @@ app.get("/users", (req, res) => {
   });
 });
 
-// Catch-all handler for undefined routes
+app.get("/dashboard-stats", (req, res) => {
+    const stats = {
+      users: 0,
+      products: 0,
+      orders: 0,
+    };
+  
+    db.query("SELECT COUNT(*) AS count FROM users", (err, result) => {
+      if (!err) stats.users = result[0].count;
+      db.query("SELECT COUNT(*) AS count FROM products", (err, result) => {
+        if (!err) stats.products = result[0].count;
+        db.query("SELECT COUNT(*) AS count FROM orders", (err, result) => {
+          if (!err) stats.orders = result[0].count;
+          res.json(stats);
+        });
+      });
+    });
+  });
+
+
 app.all("*", (req, res) => {
   res.status(404).json({ message: "Route not found" });
 });
