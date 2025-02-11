@@ -18,7 +18,7 @@
           <button type="submit" class="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">registrieren</button>
         </form>
         <p class="mt-4 text-center text-sm">
-          Already have an account?
+          hast du schon einen account?
           <NuxtLink to="/login" class="text-green-600 underline">Login</NuxtLink>
         </p>
       </div>

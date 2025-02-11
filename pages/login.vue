@@ -1,96 +1,55 @@
 <template>
-  <div class="flex justify-center items-center min-h-screen bg-gray-100">
-    <div class="w-full max-w-md bg-white p-6 rounded-lg shadow">
-      <h2 class="text-2xl font-bold text-center mb-6">Login</h2>
+  <div class="flex justify-center items-center h-screen bg-gray-100">
+    <div class="bg-white p-6 rounded-lg shadow-md w-96">
+      <h2 class="text-2xl font-semibold text-center mb-4">Login</h2>
+
       <form @submit.prevent="handleLogin">
         <div class="mb-4">
-          <label for="email" class="block text-gray-700">Email</label>
-          <input
-            id="email"
-            type="email"
-            v-model="email"
-            class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-600"
-            required
-          />
+          <label class="block text-gray-700">Email</label>
+          <input v-model="email" type="email" required class="w-full p-2 border rounded" />
         </div>
+
         <div class="mb-4">
-          <label for="password" class="block text-gray-700">Password</label>
-          <input
-            id="password"
-            type="password"
-            v-model="password"
-            class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-600"
-            required
-          />
+          <label class="block text-gray-700">Password</label>
+          <input v-model="password" type="password" required class="w-full p-2 border rounded" />
         </div>
-        <div class="mb-4">
-          <label class="flex items-center">
-            <input type="checkbox" v-model="rememberMe" class="mr-2" /> Remember Me
-          </label>
-        </div>
-        <button type="submit" class="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
+
+        <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
           anmelden
         </button>
+
+        <p v-if="errorMessage" class="text-red-500 text-center mt-2">{{ errorMessage }}</p>
       </form>
-      <p class="mt-4 text-center text-sm">
-        Besitzt du etwa noch kein Konto? :(
-        <NuxtLink to="/register" class="text-green-600 underline">Registriere dich hier</NuxtLink>
-      </p>
     </div>
   </div>
 </template>
 
 <script setup>
-import { useUserStore } from "~/store/user";
-import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { ref } from 'vue';
+import { useFetch } from '#app';
+import { useRouter } from 'vue-router';
 
-const userStore = useUserStore();
+const email = ref('');
+const password = ref('');
+const errorMessage = ref('');
 const router = useRouter();
-const email = ref("");
-const password = ref("");
-const rememberMe = ref(false);
 
 const handleLogin = async () => {
-  try {
-    const response = await userStore.login({ email: email.value, password: password.value });
-    localStorage.setItem("token", response.token);
+  const { data, error } = await useFetch('http://localhost:3005/login', {
+    method: 'POST',
+    body: JSON.stringify({ email: email.value, password: password.value }),
+  });
 
-    if (rememberMe.value && response.rememberToken) {
-      localStorage.setItem("rememberToken", response.rememberToken);
-    }
+  if (error.value) {
+    errorMessage.value = "Invalid credentials. Please try again.";
+    return;
+  }
 
-    alert("Login erfolgreich!");
-    router.push("/");
-  } catch (err) {
-    alert(err.message);
+  if (data.value?.token) {
+    localStorage.setItem('authToken', data.value.token);
+    router.push('/dashboard'); // Redirect to dashboard
+  } else {
+    errorMessage.value = "Login failed. Please check your credentials.";
   }
 };
-
-const autoLogin = async () => {
-  const rememberToken = localStorage.getItem("rememberToken");
-  if (rememberToken) {
-    try {
-      const response = await fetch("http://localhost:3005/remember-me", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ rememberToken }),
-      });
-
-      if (!response.ok) throw new Error("Invalid token");
-
-      const data = await response.json();
-      email.value = data.email;
-      alert("Auto-logged in as " + email.value);
-      router.push("/");
-    } catch (error) {
-      console.log("Remember Me token expired or invalid");
-      localStorage.removeItem("rememberToken");
-    }
-  }
-};
-
-onMounted(() => {
-  autoLogin();
-});
 </script>
