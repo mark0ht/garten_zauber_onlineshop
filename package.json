@@ -10,13 +10,15 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@heroicons/vue": "^2.2.0",
     "@nuxt/content": "^3.0.0",
     "algoliasearch": "^5.20.0",
-    "axios": "^1.7.9",
     "express": "^4.21.2",
+    "got": "^14.4.6",
     "http-proxy-middleware": "^3.0.3",
     "mysql": "^2.18.1",
-    "nuxt": "^3.15.2",
+    "node-fetch": "^3.3.2",
+    "nuxt": "^3.15.4",
     "pinia": "^2.3.1",
     "vue": "latest",
     "vue-router": "latest"
@@ -24,6 +26,8 @@
   "devDependencies": {
     "@iconify-json/typcn": "^1.2.2",
     "@nuxt/icon": "^1.10.3",
+    "@nuxt/types": "^2.18.1",
+    "@nuxt/typescript-build": "^3.0.2",
     "@nuxtjs/algolia": "^1.10.2",
     "@nuxtjs/color-mode": "^3.5.2",
     "@nuxtjs/tailwindcss": "^6.13.1",

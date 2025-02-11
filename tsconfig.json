@@ -11,6 +11,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
+    "types": ["@nuxt/types", "@nuxt/typescript-build"],
     "paths": {
       "@/*": ["./*"]
     }

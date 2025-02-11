@@ -1,6 +1,4 @@
 import { defineStore } from "pinia";
-import axios from "axios"; // Import axios for API requests
-
 
 export const useUserStore = defineStore("user", {
   state: () => ({
@@ -13,54 +11,52 @@ export const useUserStore = defineStore("user", {
   actions: {
     async login({ email, password }) {
       try {
-        // Replace this with your actual API URL
-        const response = await axios.post("http://localhost:3005/login", {
-          email,
-          password,
+        const response = await fetch("http://localhost:3005/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
         });
 
-        const { user, token } = response.data;
+        if (!response.ok) {
+          throw new Error("Login fehlgeschlagen. Überprüfe deine Anmeldedaten.");
+        }
 
-        // Store user data and token
+        const { user, token } = await response.json();
         this.setUser(user, token);
 
         return true; // Success
       } catch (error) {
-        throw new Error("Login fehlgeschlagen. Überprüfe deine Anmeldedaten.");
+        throw new Error(error.message);
       }
     },
     async register({ email, password, name }) {
       try {
-        // Log the request data
         console.log("Registering user with data:", { email, password, name });
 
-        // Replace this with your actual API URL
-        const response = await axios.post("http://localhost:3005/register", {
-          email,
-          password,
-          name,
+        const response = await fetch("http://localhost:3005/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password, name }),
         });
 
-        // Log the response data
-        console.log("Registration response:", response.data);
+        if (!response.ok) {
+          throw new Error("Registrierung fehlgeschlagen. Überprüfe deine Daten.");
+        }
 
-        const { user, token } = response.data;
-
-        // Store user data and token
+        const { user, token } = await response.json();
         this.setUser(user, token);
 
         return true; // Success
       } catch (error) {
-        // Log the error
         console.error("Registration error:", error);
-        throw new Error("Registrierung fehlgeschlagen. Überprüfe deine Daten.");
+        throw new Error(error.message);
       }
     },
     setUser(userData, token) {
       this.user = userData;
       this.token = token;
 
-      // Custom replacer function to handle circular references
+      // Prevent circular references in JSON
       const getCircularReplacer = () => {
         const seen = new WeakSet();
         return (key, value) => {

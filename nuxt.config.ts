@@ -1,21 +1,29 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
+import { defineNuxtConfig } from 'nuxt/config';
+
 export default defineNuxtConfig({
-  compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
+
+  typescript: {
+    strict: true,
+    tsConfig: {
+      compilerOptions: {
+        noImplicitAny: true,
+      }
+    }
+  },
+
   modules: [
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
     '@nuxt/icon',
     'nuxt-headlessui',
   ],
-  axios: {
-    // Set your API base URL here, this can be different for development and production
-    baseURL: 'http://localhost:3000', // Replace with your API base URL
+
+  runtimeConfig: {
+    public: {
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:3005',
+    },
   },
-  tailwindcss: {
-    config: {
-      darkMode: 'class', // Enable class-based dark mode
-      // Other Tailwind CSS configurations
-    }
-  }
-})
+
+  compatibilityDate: '2025-02-12',
+});

@@ -5,22 +5,36 @@
       <form @submit.prevent="handleLogin">
         <div class="mb-4">
           <label for="email" class="block text-gray-700">Email</label>
-          <input id="email" type="email" v-model="email" class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-600" required />
+          <input
+            id="email"
+            type="email"
+            v-model="email"
+            class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-600"
+            required
+          />
         </div>
         <div class="mb-4">
           <label for="password" class="block text-gray-700">Password</label>
-          <input id="password" type="password" v-model="password" class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-600" required />
+          <input
+            id="password"
+            type="password"
+            v-model="password"
+            class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-600"
+            required
+          />
         </div>
         <div class="mb-4">
           <label class="flex items-center">
             <input type="checkbox" v-model="rememberMe" class="mr-2" /> Remember Me
           </label>
         </div>
-        <button type="submit" class="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">anmelden</button>
+        <button type="submit" class="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
+          anmelden
+        </button>
       </form>
       <p class="mt-4 text-center text-sm">
         Besitzt du etwa noch kein Konto? :(
-        <NuxtLink to="/register" class="text-green-600 underline">Registriere dich hier </NuxtLink>
+        <NuxtLink to="/register" class="text-green-600 underline">Registriere dich hier</NuxtLink>
       </p>
     </div>
   </div>
@@ -30,7 +44,6 @@
 import { useUserStore } from "~/store/user";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import axios from "axios";
 
 const userStore = useUserStore();
 const router = useRouter();
@@ -41,10 +54,12 @@ const rememberMe = ref(false);
 const handleLogin = async () => {
   try {
     const response = await userStore.login({ email: email.value, password: password.value });
-    localStorage.setItem("token", response.data.token);
-    if (rememberMe.value && response.data.rememberToken) {
-      localStorage.setItem("rememberToken", response.data.rememberToken);
+    localStorage.setItem("token", response.token);
+
+    if (rememberMe.value && response.rememberToken) {
+      localStorage.setItem("rememberToken", response.rememberToken);
     }
+
     alert("Login erfolgreich!");
     router.push("/");
   } catch (err) {
@@ -56,10 +71,16 @@ const autoLogin = async () => {
   const rememberToken = localStorage.getItem("rememberToken");
   if (rememberToken) {
     try {
-      const response = await axios.post("http://localhost:3005/remember-me", {
-        rememberToken,
+      const response = await fetch("http://localhost:3005/remember-me", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ rememberToken }),
       });
-      email.value = response.data.email;
+
+      if (!response.ok) throw new Error("Invalid token");
+
+      const data = await response.json();
+      email.value = data.email;
       alert("Auto-logged in as " + email.value);
       router.push("/");
     } catch (error) {

@@ -5,7 +5,7 @@
         v-model="searchQuery"
         @input="onSearch"
         type="text"
-        placeholder="search products..."
+        placeholder="Suchen Sie hier Produkte..."
         class="w-64 px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
       />
       <!-- clear button to reset search -->
@@ -26,18 +26,14 @@
 import { ref } from 'vue';
 import { useSearchStore } from '~/store/search';
 
-// grab the search store
 const searchStore = useSearchStore();
 
-// local reactive variable for search input
 const searchQuery = ref(searchStore.searchTerm);
 
-// update the store whenever the user types
 const onSearch = () => {
     searchStore.setSearchTerm(searchQuery.value);
 };
 
-// reset search input and store value
 const clearSearch = () => {
     searchQuery.value = '';
     searchStore.clearSearchTerm();

@@ -15,7 +15,7 @@
             <label for="password" class="block text-gray-700">Password</label>
             <input id="password" type="password" v-model="password" class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-green-600" required />
           </div>
-          <button type="submit" class="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">Register</button>
+          <button type="submit" class="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">registrieren</button>
         </form>
         <p class="mt-4 text-center text-sm">
           Already have an account?

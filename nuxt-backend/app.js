@@ -1,4 +1,4 @@
-const express = require('express');
+/* const express = require('express');
 const mysql = require('mysql2'); // Use mysql2 for better async/await support
 const app = express();
 
@@ -56,4 +56,4 @@ app.post('/register', (req, res) => {
 const PORT = 3005;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
-});
+}); */
