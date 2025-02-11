@@ -149,24 +149,23 @@ app.get("/users", (req, res) => {
 });
 
 app.get("/dashboard-stats", (req, res) => {
-    const stats = {
-      users: 0,
-      products: 0,
-      orders: 0,
-    };
-  
-    db.query("SELECT COUNT(*) AS count FROM users", (err, result) => {
-      if (!err) stats.users = result[0].count;
-      db.query("SELECT COUNT(*) AS count FROM products", (err, result) => {
-        if (!err) stats.products = result[0].count;
-        db.query("SELECT COUNT(*) AS count FROM orders", (err, result) => {
-          if (!err) stats.orders = result[0].count;
-          res.json(stats);
-        });
+  const stats = {
+    users: 0,
+    products: 0,
+    orders: 0,
+  };
+
+  db.query("SELECT COUNT(*) AS count FROM users", (err, result) => {
+    if (!err) stats.users = result[0].count;
+    db.query("SELECT COUNT(*) AS count FROM products", (err, result) => {
+      if (!err) stats.products = result[0].count;
+      db.query("SELECT COUNT(*) AS count FROM orders", (err, result) => {
+        if (!err) stats.orders = result[0].count;
+        res.json(stats);
       });
     });
   });
-
+});
 
 app.all("*", (req, res) => {
   res.status(404).json({ message: "Route not found" });

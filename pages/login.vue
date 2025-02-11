@@ -14,6 +14,13 @@
           <input v-model="password" type="password" required class="w-full p-2 border rounded" />
         </div>
 
+        <div class="mb-4">
+          <label class="inline-flex items-center">
+            <input type="checkbox" v-model="rememberMe" class="form-checkbox" />
+            <span class="ml-2">Remember Me</span>
+          </label>
+        </div>
+
         <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
           anmelden
         </button>
@@ -26,30 +33,33 @@
 
 <script setup>
 import { ref } from 'vue';
-import { useFetch } from '#app';
 import { useRouter } from 'vue-router';
 
 const email = ref('');
 const password = ref('');
+const rememberMe = ref(false);
 const errorMessage = ref('');
 const router = useRouter();
 
 const handleLogin = async () => {
-  const { data, error } = await useFetch('http://localhost:3005/login', {
-    method: 'POST',
-    body: JSON.stringify({ email: email.value, password: password.value }),
-  });
+  try {
+    const response = await $fetch('http://localhost:3005/login', {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: email.value, password: password.value, rememberMe: rememberMe.value }),
+    });
 
-  if (error.value) {
+    if (response.token) {
+      localStorage.setItem('authToken', response.token);
+      if (response.rememberToken) {
+        localStorage.setItem('rememberToken', response.rememberToken);
+      }
+      router.push('/dashboard'); // Redirect to dashboard
+    } else {
+      errorMessage.value = "Login failed. Please check your credentials.";
+    }
+  } catch (error) {
     errorMessage.value = "Invalid credentials. Please try again.";
-    return;
-  }
-
-  if (data.value?.token) {
-    localStorage.setItem('authToken', data.value.token);
-    router.push('/dashboard'); // Redirect to dashboard
-  } else {
-    errorMessage.value = "Login failed. Please check your credentials.";
   }
 };
 </script>

@@ -4,25 +4,26 @@ export const useUserStore = defineStore("user", {
   state: () => ({
     user: null,
     token: null,
+    rememberToken: null,
   }),
   getters: {
     isAuthenticated: (state) => !!state.user && !!state.token,
   },
   actions: {
-    async login({ email, password }) {
+    async login({ email, password, rememberMe }) {
       try {
         const response = await fetch("http://localhost:3005/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
+          body: JSON.stringify({ email, password, rememberMe }),
         });
 
         if (!response.ok) {
           throw new Error("Login fehlgeschlagen. Überprüfe deine Anmeldedaten.");
         }
 
-        const { user, token } = await response.json();
-        this.setUser(user, token);
+        const { user, token, rememberToken } = await response.json();
+        this.setUser(user, token, rememberToken);
 
         return true; // Success
       } catch (error) {
@@ -52,39 +53,32 @@ export const useUserStore = defineStore("user", {
         throw new Error(error.message);
       }
     },
-    setUser(userData, token) {
-      this.user = userData;
+    setUser(userData, token, rememberToken) {
+      this.user = JSON.parse(JSON.stringify(userData)); // Ensure userData is a plain object
       this.token = token;
-
-      // Prevent circular references in JSON
-      const getCircularReplacer = () => {
-        const seen = new WeakSet();
-        return (key, value) => {
-          if (typeof value === "object" && value !== null) {
-            if (seen.has(value)) {
-              return;
-            }
-            seen.add(value);
-          }
-          return value;
-        };
-      };
-
-      localStorage.setItem("user", JSON.stringify(userData, getCircularReplacer()));
+      this.rememberToken = rememberToken;
+      localStorage.setItem("user", JSON.stringify(this.user));
       localStorage.setItem("token", token);
+      if (rememberToken) {
+        localStorage.setItem("rememberToken", rememberToken);
+      }
     },
     logout() {
       this.user = null;
       this.token = null;
+      this.rememberToken = null;
       localStorage.removeItem("user");
       localStorage.removeItem("token");
+      localStorage.removeItem("rememberToken");
     },
     loadUserFromStorage() {
       const storedUser = localStorage.getItem("user");
       const storedToken = localStorage.getItem("token");
+      const storedRememberToken = localStorage.getItem("rememberToken");
       if (storedUser && storedToken) {
         this.user = JSON.parse(storedUser);
         this.token = storedToken;
+        this.rememberToken = storedRememberToken;
       }
     },
   },
