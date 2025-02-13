@@ -39,22 +39,43 @@ const transporter = nodemailer.createTransport({
 // Register routes before starting the server
 app.post("/register", async (req, res) => {
   const { email, password, name } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const query = "INSERT INTO users (email, password, username) VALUES (?, ?, ?)";
 
-  db.query(query, [email, hashedPassword, name], (err, result) => {
-    if (err) {
-      console.error("Error executing query:", err.message);
-      return res.status(500).json({ error: "Database query failed" });
-    }
-    res.status(200).json({ message: "User registered successfully" });
-  });
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const query = "INSERT INTO users (email, password, username) VALUES (?, ?, ?)";
+
+    db.query(query, [email, hashedPassword, name], (err, result) => {
+      if (err) {
+        console.error("Error executing query:", err.message);
+        return res.status(500).json({ error: "Database query failed" });
+      }
+
+      // Erstelle einen Token für den neuen Benutzer
+      const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: "1h" });
+
+      // Sende Benutzerinformationen und Token zurück
+      const user = {
+        id: result.insertId,
+        email: email,
+        name: name
+      };
+
+      res.status(200).json({
+        message: "User registered successfully",
+        user: user,
+        token: token
+      });
+    });
+  } catch (error) {
+    console.error("Registration error:", error);
+    res.status(500).json({ error: "Registration failed" });
+  }
 });
 
 app.post("/login", async (req, res) => {
   console.log("Login route hit! Request body:", req.body);
   const { email, password, rememberMe } = req.body;
-  
+
   const query = "SELECT * FROM users WHERE email = ?";
   db.query(query, [email], async (err, results) => {
     if (err) {
@@ -98,7 +119,7 @@ app.post("/remember-me", async (req, res) => {
 
 app.post("/request-reset", async (req, res) => {
   const { email } = req.body;
-  
+
   const query = "SELECT * FROM users WHERE email = ?";
   db.query(query, [email], (err, results) => {
     if (err || results.length === 0) {

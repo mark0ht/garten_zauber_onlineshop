@@ -32,22 +32,51 @@ export const useUserStore = defineStore("user", {
     },
     async register({ email, password, name }) {
       try {
-        console.log("Registering user with data:", { email, password, name });
+        const cleanData = {
+          email: typeof email === 'object' && email.value !== undefined ? email.value : email,
+          password: typeof password === 'object' && password.value !== undefined ? password.value : password,
+          name: typeof name === 'object' && name.value !== undefined ? name.value : name
+        };
+
+        if (!cleanData.email || !cleanData.password || !cleanData.name) {
+          throw new Error("Bitte füllen Sie alle Pflichtfelder aus.");
+        }
+
+        console.log("Attempting to register user with data:", cleanData);
 
         const response = await fetch("http://localhost:3005/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password, name }),
+          body: JSON.stringify(cleanData),
         });
 
+        console.log("Registration response received:", response);
+
         if (!response.ok) {
+          console.error("Registration failed. Status:", response.status);
           throw new Error("Registrierung fehlgeschlagen. Überprüfe deine Daten.");
         }
 
-        const { user, token } = await response.json();
-        this.setUser(user, token);
+        // Lese den Response-Body als Text
+        const responseText = await response.text();
+        console.log("Response text:", responseText);
 
-        return true; // Success
+        // Versuche den Text als JSON zu parsen
+        let data;
+        try {
+          data = JSON.parse(responseText);
+        } catch (e) {
+          console.error("Failed to parse response as JSON:", e);
+          throw new Error("Ungültige Serverantwort");
+        }
+
+        const { user, token } = data;
+        if (!user || !token) {
+          throw new Error("Unvollständige Serverantwort");
+        }
+
+        this.setUser(user, token, null);
+        return true;
       } catch (error) {
         console.error("Registration error:", error);
         throw new Error(error.message);
